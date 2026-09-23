@@ -31,3 +31,19 @@ td>button{white-space:nowrap} .table-wrap{max-width:100%}
   .outcome-strip{display:flex;overflow-x:auto;padding-bottom:3px}
   .outcome-strip div{flex:0 0 170px}
 }
+
+header .tagline{max-width:920px;margin:10px 0 0;color:#b7ddd6;font-size:14px;line-height:1.55;letter-spacing:0}
+.scope-details{margin:10px 0 0;color:var(--muted)}
+.scope-details summary{font-size:13px;padding:4px 0}
+.scope-details .hint{margin:6px 0 0}
+@media(max-width:500px){
+  header .tagline{font-size:13px}
+  .outcome-strip{margin-top:12px}
+  .global{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:13px}
+  .global label{min-width:0}
+  .global label:nth-of-type(3){grid-column:1;grid-row:2}
+  .global .scope{grid-column:1/-1;grid-row:3;min-width:0;font-size:12px}
+  .global #resetFilters{grid-column:2;grid-row:2;justify-self:start;align-self:end}
+  .navigation{padding:14px 0}
+  .navigation button{font-size:13px;line-height:1.25}
+}
