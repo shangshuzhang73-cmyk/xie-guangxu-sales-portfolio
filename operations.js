@@ -163,3 +163,27 @@ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>go(b.dataset.v
 $('reportMonth').onchange=()=>{const m=$('reportMonth').value;if(!m)return;const end=new Date(Date.UTC(Number(m.slice(0,4)),Number(m.slice(5,7)),0)).toISOString().slice(0,10);$('asof').value=end>OPS_DATA.asof?OPS_DATA.asof:end;page=0;refresh()};$('funnelAdvisor').onchange=renderFunnel;['careScene','careStatus'].forEach(id=>$(id).onchange=renderCare);
 const legacy={'step-0':'funnel','step-1':'strategy','step-2':'allocation','step-3':'review','step-4':'funnel','step-5':'care','step-6':'allocation','step-7':'reports','step-8':'reports','step-9':'allocation'};let hash=location.hash.slice(1);go(hash==='payroll'?'care':legacy[hash]||hash||'funnel');
 }
+
+// Keep primary lists available while allowing readers to fold long detail tables.
+if (typeof document !== 'undefined') for (const [id, label, expanded] of [
+ ['allocationTable', '线索明细', true],
+ ['funnelGroupTable', '门店对比明细', true],
+ ['funnelAdvisorTable', '顾问对比明细', false],
+ ['visitsTable', '每日进店明细', false],
+ ['channelTable', '锁单渠道明细', false],
+ ['reviewTable', '客户复盘明细', true],
+ ['reportStaff', '顾问进度明细', false],
+ ['reportOverdue', '未跟进客户明细', false],
+ ['reportLocks', '锁单客户明细', false],
+ ['careTable', '客户关怀明细', true]
+]) {
+ const target = document.getElementById(id);
+ if (!target || target.parentElement?.classList.contains('table-control')) continue;
+ const details = document.createElement('details');
+ details.className = 'table-control';
+ details.open = expanded;
+ const summary = document.createElement('summary');
+ summary.textContent = label;
+ target.before(details);
+ details.append(summary, target);
+}

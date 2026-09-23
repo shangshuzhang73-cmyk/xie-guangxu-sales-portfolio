@@ -47,3 +47,13 @@ header .tagline{max-width:920px;margin:10px 0 0;color:#b7ddd6;font-size:14px;lin
   .navigation{padding:14px 0}
   .navigation button{font-size:13px;line-height:1.25}
 }
+
+.overview-title{font-size:20px;line-height:1.35;margin:7px 0 12px}
+.overview-title small{font-size:12px;font-weight:400;color:var(--muted);margin-left:8px}
+.table-control{margin-top:10px}
+.table-control>summary{list-style:none;display:flex;align-items:center;gap:8px;width:100%;padding:10px 13px;background:#f1f7f7;border:1px solid #c9dcdd;border-radius:8px;color:#1c5d59;font-size:13px;font-weight:600;cursor:pointer}
+.table-control>summary::-webkit-details-marker{display:none}
+.table-control>summary::after{content:'展开表格';margin-left:auto;color:#476f73;font-weight:400}
+.table-control[open]>summary::after{content:'收起表格'}
+.table-control[open]>summary{margin-bottom:10px}
+.table-control>summary:focus-visible{outline:3px solid #3aac9b;outline-offset:2px}
