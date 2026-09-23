@@ -14,3 +14,8 @@ td>button{white-space:nowrap} .table-wrap{max-width:100%}
 #allocationTable .table-wrap,#reportLocks .table-wrap{max-height:620px;overflow:auto}
 
 .funnel{grid-template-columns:repeat(5,1fr)}@media(max-width:850px){.funnel{grid-template-columns:repeat(3,1fr)}}
+
+.outcome-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.outcome-strip div{border:1px solid #53747b;border-radius:8px;padding:10px 13px}.outcome-strip strong{display:block;font-size:14px;color:#d6f1e9}.outcome-strip span{display:block;font-size:12px;color:#bbd4d7;margin-top:2px}@media(max-width:700px){.outcome-strip{grid-template-columns:1fr}}
+
+.outcome-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.outcome-strip div{border:1px solid #53747b;border-radius:8px;padding:10px 13px}.outcome-strip strong{display:block;font-size:14px;color:#d6f1e9}.outcome-strip span{display:block;font-size:12px;color:#bbd4d7;margin-top:2px}@media(max-width:700px){.outcome-strip{grid-template-columns:1fr}}
+.quick-start{margin:14px 0 0;font-size:13px;color:#dbefed}.quick-start b{color:#8fd8c7}
