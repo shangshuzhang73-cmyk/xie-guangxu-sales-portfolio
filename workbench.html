@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="谢光旭的汽车销售运营业务流程演示">
+  <title>销售运营工作台 · 谢光旭</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%230d343e'/%3E%3Ctext x='8' y='29' fill='white' font-size='26'%3E谢%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="workbench.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <nav><a href="index.html">← 作品集首页</a><a href="case.html">查看业务设计</a></nav>
+      <p class="eyebrow">业务流程原型 / 模拟数据</p>
+      <h1>汽车销售运营工作台</h1>
+      <p class="intro">先分配，再看转化；逐客复盘，跟到交付。</p>
+      <p class="notice">人物、业务记录、门店和车辆资源均用于说明业务流程，不代表真实经营业绩或实时库存。本页面不执行真实分配，也不发送消息。</p>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="主要业务流程">
+      <button role="tab" data-view="allocation">01 线索分配</button>
+      <button role="tab" data-view="funnel">02 销售漏斗</button>
+      <button role="tab" data-view="strategy">03 高意向与策略</button>
+      <button role="tab" data-view="review">04 客户复盘</button>
+      <button role="tab" data-view="reports">05 日报周报</button>
+      <button role="tab" data-view="care">06 客户关怀</button>
+    </div>
+
+    <main>
+      <section id="allocation" class="page" role="tabpanel">
+        <div class="heading"><span>01 / 先确认归属</span><h2>线上留资接收与分配</h2><p>线上留资按门店与顾问容量分配；自然进店由接待顾问跟进，转介绍保留销售原归属。</p></div>
+        <div class="metrics"><div><small>当日线上留资</small><strong>21</strong></div><div><small>待分配</small><strong>7</strong></div><div><small>当日已分配</small><strong>14</strong></div><div><small>未首次联系</small><strong>21</strong></div></div>
+        <div class="card"><h3>待分配记录示例</h3><p class="hint">以下数据来自原站的模拟数据页面，仅用于展示分配判断。</p><div class="table-wrap"><table><thead><tr><th>客户</th><th>车型</th><th>渠道</th><th>归属门店</th><th>获取日期</th></tr></thead><tbody><tr><td>李女士</td><td>ET5</td><td>抖音</td><td>西安一店</td><td>2026-09-18</td></tr><tr><td>郑女士</td><td>ET9</td><td>抖音</td><td>西安四店</td><td>2026-09-18</td></tr><tr><td>侯女士</td><td>ES9</td><td>小红书</td><td>西安一店</td><td>2026-09-18</td></tr><tr><td>龚先生</td><td>ES7</td><td>蔚来 App</td><td>西安二店</td><td>2026-09-18</td></tr></tbody></table></div></div>
+        <div class="card"><h3>分配策略与跨店协同</h3><div class="steps"><article><b>来源与归属</b><p>线上留资先查重；自然进店、转介绍由原顾问持续跟进。</p></article><article><b>本店承接</b><p>优先核对在岗、可接待时间和剩余容量，再参考分配占比。</p></article><article><b>跨店协同</b><p>需要调整客户归属时，先确认双方负责人和客户意愿。</p></article></div></div>
+      </section>
+
+      <section id="funnel" class="page" role="tabpanel" hidden>
+        <div class="heading"><span>02 / 找出转化卡点</span><h2>销售漏斗与锁单转化</h2><p>同一队列看建联、邀约、到店、试驾和锁单，再回到客户记录核对原因。</p></div>
+        <div class="card"><h3>观察顺序</h3><div class="pipeline"><span>新增客户</span><span>成功建联</span><span>邀约 / 到店</span><span>试驾</span><span>锁单</span></div><p class="hint">自然进店不要求先邀约；历史客户在本月锁单，不混入本月新增客户漏斗。</p></div>
+        <div class="grid"><div class="card"><h3>每日进店</h3><p>按门店区分自然进店、邀约到店和老车主到店，避免与获客渠道混算。</p></div><div class="card"><h3>锁单来源</h3><p>只以已锁单客户统计获客渠道，再观察成交周期和车型交付情况。</p></div></div>
+      </section>
+
+      <section id="strategy" class="page" role="tabpanel" hidden>
+        <div class="heading"><span>03 / 逐客确认原因</span><h2>高意向优先池与策略证据</h2><p>一位客户一行，区分当前事实、初步判断和需要销售确认的下一步。</p></div>
+        <div class="grid"><div class="card"><h3>高意向未试驾</h3><p>核对最近邀约、预约日期、阻碍到店的原因和负责顾问下一步动作。</p></div><div class="card"><h3>已试驾未锁单</h3><p>记录实际试驾日期、订车顾虑与预计订车时间，区分猜测和已核实结论。</p></div></div>
+        <div class="card"><h3>超时跟进规则</h3><p>距最近一次有效销售跟进 8—14 天为超 7 天，15—30 天为超 14 天，31 天及以上为超 30 天；未首次联系单列。</p></div>
+      </section>
+
+      <section id="review" class="page" role="tabpanel" hidden>
+        <div class="heading"><span>04 / 核对关键节点</span><h2>客户节点复盘</h2><p>复盘客户卡在哪一环：何时来试驾、何时订车、车辆何时到店，以及何时提车。</p></div>
+        <div class="steps"><article class="card"><h3>高意向未试驾</h3><p>确认下一次邀约与到店阻碍。</p></article><article class="card"><h3>已试驾未锁单</h3><p>确认订车顾虑与计划时间。</p></article><article class="card"><h3>锁单至交付</h3><p>并列记录锁单、车辆实际到店、计划交付和实际提车日期。</p></article></div>
+        <div class="card"><h3>交付协同检查</h3><p>车辆、手续和客户时间分别落实负责人，再检查实际进展；计划日期不等同于已发生结果。</p></div>
+      </section>
+
+      <section id="reports" class="page" role="tabpanel" hidden>
+        <div class="heading"><span>05 / 通晒目标与进度</span><h2>日报与周报</h2><p>集中查看有效互动、邀约、试驾和锁单，并核对未首次联系与超时跟进。</p></div>
+        <div class="card"><h3>统一统计口径</h3><div class="table-wrap"><table><thead><tr><th>指标</th><th>口径</th></tr></thead><tbody><tr><td>有效互动</td><td>有销售跟进记录的客户数，按客户去重，不计消息条数。</td></tr><tr><td>试驾</td><td>按实际发生日期记录。</td></tr><tr><td>锁单</td><td>按锁单事件日期记录。</td></tr><tr><td>待跟进</td><td>截至数据截止日的客户存量。</td></tr></tbody></table></div></div>
+        <div class="card"><h3>复盘动作</h3><p>先看建联与到店，再追踪试驾和锁单；对未转化客户核实原因。活动客户保留原顾问归属，不重复计入线上分配池。</p></div>
+      </section>
+
+      <section id="care" class="page" role="tabpanel" hidden>
+        <div class="heading"><span>06 / 延续客户体验</span><h2>客户关怀与微信跟进</h2><p>尊重联系偏好，及时回应问题，记录服务闭环。</p></div>
+        <div class="grid"><div class="card"><h3>未购车客户</h3><p>到店前提醒、试驾后问候和需求确认。</p></div><div class="card"><h3>待交付客户</h3><p>确认车辆、手续、交付时间和客户反馈。</p></div><div class="card"><h3>已提车车主</h3><p>提车后回访和日常用车需求关怀。</p></div></div>
+        <div class="card"><h3>联系原则</h3><p>问候文案需先核对并编辑；未添加微信时先确认联系方式。暂停联系的客户不生成主动问候，本页面也不会自动发送消息。</p></div>
+      </section>
+    </main>
+    <footer>谢光旭 / 销售运营 · 业务逻辑设计 <a href="case.html">返回案例说明 ↑</a></footer>
+  </div>
+  <script src="workbench.js"></script>
+</body>
+</html>
