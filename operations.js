@@ -56,7 +56,8 @@ function saveCustomer(id){let values={appointment:$('editAppointment').value||nu
 const reportKey=()=>[reportMode,Core.period(day(),reportMode).start,day(),$('store').value||'all'].join('|');
 function targets(){return state.targets[reportKey()]||[12,6,4,2].map(n=>n*($('store').value?1:5)*(Core.days(Core.period(day(),reportMode).start,day())+1))}
 function renderReports(){let a=rows(),p=Core.period(day(),reportMode),done=Core.stats(a,p),target=targets(),labels=['有效互动客户','邀约客户','实际试驾','锁单'];$('reportPeriod').textContent=p.start+' 至 '+p.end+' · '+($('store').value||'全部门店')+'；默认目标按每日目标 × 已统计自然日计算，可按实际计划调整。周内客户去重统计。';$('reportDay').setAttribute('aria-pressed',String(reportMode==='day'));$('reportWeek').setAttribute('aria-pressed',String(reportMode==='week'));$('targetInputs').innerHTML=labels.map((n,i)=>'<label>'+n+'<input id="target'+i+'" type="number" min="0" max="100000" step="1" value="'+target[i]+'"></label>').join('');$('targetTable').innerHTML=table(['指标','目标','完成','完成率','差额'],labels.map((n,i)=>[n,target[i],done[i],target[i]?(done[i]/target[i]*100).toFixed(1)+'%':'未设目标',Math.max(0,target[i]-done[i])]));$('reportStaff').innerHTML=table(['顾问','门店',...labels],staff().map(s=>[esc(s.name),esc(s.store),...Core.stats(a.filter(l=>l.advisor===s.id),p)]));let overdue=a.filter(l=>!Core.happened(l.lock,day())&&Core.overdue(l,day()).bucket!=='未超时');$('reportOverdue').innerHTML=table(['客户','顾问','最近跟进','超时','下一步'],overdue.map(l=>[person(l),owner(l),esc(Core.last(l,day())||'无记录'),overdueCell(l),'<div class="note-cell">'+esc(note(l).action)+'</div>']));$('reportLocks').innerHTML=table(['锁单日期','客户','顾问','车型','获客来源'],a.filter(l=>Core.inside(l.lock,p)).map(l=>[dateCell(l.lock),person(l),owner(l),l.model,esc(l.source)]));$('taskTable').innerHTML=table(['任务','核对要求','状态'],[['试驾准备','核对车辆状态、时段与接待安排'],['政策与物料','核对有效期、适用车型与展示内容'],['交付准备','核对车辆、手续与客户提车时间']].map(([name,desc],i)=>[name,desc,'<select aria-label="'+name+'状态" onchange="setTask('+i+',this.value)">'+['待执行','处理中','已核对'].map(t=>'<option'+((state.tasks[i]||'待执行')===t?' selected':'')+'>'+t+'</option>').join('')+'</select>']))}
-function setTask(i,v){state.tasks[i]=v;persist()}
+function renderTaskProgress(){const values=[0,1,2].map(i=>state.tasks[i]||'待执行');$('taskProgress').textContent='3 项执行任务 · 已核对 '+values.filter(v=>v==='已核对').length+' 项 · 处理中 '+values.filter(v=>v==='处理中').length+' 项 · 待执行 '+values.filter(v=>v==='待执行').length+' 项';}
+function setTask(i,v){state.tasks[i]=v;persist();renderTaskProgress()}
 function setReport(mode){reportMode=mode;renderReports()}
 function saveTargets(){let t=[0,1,2,3].map(i=>Number($('target'+i).value));if(t.some(n=>!Number.isInteger(n)||n<0||n>100000)){toast('请输入0至100000的整数目标。');return}state.targets[reportKey()]=t;persist();renderReports();toast('当前范围的目标已保存。')}
 function download(text,name){let url=URL.createObjectURL(new Blob(['\ufeff'+text],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
@@ -67,7 +68,9 @@ let resourcePage=0,strategyMode='priority',careAudience='prospect';
 function renderAllocation(){
  const a=rows().filter(l=>Core.onlineLead(l)),today=a.filter(l=>l.acquired===day());
  metrics('allocationMetrics',[['当日线上留资',today.length,'仅统计线上获客渠道'],['待分配',a.filter(l=>Core.allocatable(l,day())).length,'含历史待分配线上留资'],['当日已分配',today.filter(l=>l.advisor).length,'已建立顾问归属'],['未首次联系',today.filter(l=>!Core.happened(l.connect,day())).length,'跟进真实建联结果']]);
- $('allocationShare').innerHTML=table(['顾问','所属门店销售组','分配参考占比','当日接收','实际分配占比','剩余承接'],staff().map(s=>{const total=today.filter(l=>l.store===s.store&&l.advisor).length,count=today.filter(l=>l.advisor===s.id).length;return ['<b>'+esc(s.name)+'</b>',s.store,s.weight+'%',count,total?(count/total*100).toFixed(1)+'%':'—',allocationCapacity(s).left]}));
+ const shareStore=$('allocationShareStore'),selectedStore=$('store').value||shareStore.value||OPS_DATA.stores[0];
+ shareStore.value=selectedStore;shareStore.disabled=!!$('store').value;
+ $('allocationShare').innerHTML=table(['顾问','参考／实际占比','当日接收','剩余名额'],staff().filter(s=>s.store===selectedStore).map(s=>{const total=today.filter(l=>l.store===s.store&&l.advisor).length,count=today.filter(l=>l.advisor===s.id).length;return ['<b>'+esc(s.name)+'</b>','<b>'+s.weight+'%</b><small>实际 '+(total?(count/total*100).toFixed(1)+'%':'—')+'</small>',count,allocationCapacity(s).left]}));
  const mode=$('allocationState').value,list=mode==='all'?a:mode==='assigned'?today.filter(l=>!!l.advisor):a.filter(l=>Core.allocatable(l,day()));
  $('allocationTable').innerHTML=table(['客户','获客渠道／需求','归属门店','负责顾问','获取日期','操作'],list.map(l=>[person(l),esc(l.source)+'<small class="note-cell">'+esc(l.evidence)+'</small>',esc(l.store),owner(l),dateCell(l.acquired),!Core.allocatable(l,day())?'<button onclick="openCustomer(\''+l.id+'\')">查看跟进</button>':'<button class="primary" onclick="openAssign(\''+l.id+'\')">分配顾问</button>']));
 }
@@ -106,6 +109,8 @@ function renderStrategy(){
  const pool=Core.pool(rows(),day()),high=pool.filter(l=>Core.happened(l.highAt,day())||Core.happened(l.drive,day()));
  metrics('strategyMetrics',[['高意向优先池',high.length,'有高意向确认或实际试驾'],['高意向未试驾',high.filter(l=>!Core.happened(l.drive,day())).length,'关注到店阻力'],['已试驾未锁单',high.filter(l=>Core.happened(l.drive,day())).length,'关注决策顾虑'],['跟进异常客户',pool.filter(l=>Core.overdue(l,day()).bucket!=='未超时').length,'另在策略证据中核查']]);
  $('strategyPriority').setAttribute('aria-pressed',String(strategyMode==='priority'));$('strategyEvidence').setAttribute('aria-pressed',String(strategyMode==='evidence'));
+ $('strategyListTitle').textContent=strategyMode==='priority'?'优先客户明细':'策略证据与异常跟进明细';
+ $('strategyListHint').textContent=strategyMode==='priority'?'筛出已确认高意向或已试驾、但尚未锁单的客户；逐客查看关注点和建议行动，点开客户后核对并记录下一步。':'把跟进超时等异常客户与已记录事实放在一起，先核实原因，再决定邀约或接待动作。';
  let list=strategyRows();if(strategyMode==='priority')list=list.filter(l=>Core.happened(l.highAt,day())||Core.happened(l.drive,day()));
  const pages=Math.max(1,Math.ceil(list.length/10));page=Math.max(0,Math.min(page,pages-1));
  $('strategyTable').innerHTML=strategyMode==='priority'?table(['客户／负责顾问','高意向依据','当前阶段／跟进','客户关注点','优先行动','操作'],list.slice(page*10,page*10+10).map(l=>[person(l)+owner(l),esc(l.intentReason||'已完成试驾并进入订车沟通'),pill(Core.stage(l,day()),'blue')+'<small>'+overdueCell(l)+'</small>','<div class="note-cell">'+esc(l.evidence)+'</div>','<div class="note-cell">'+esc(note(l).action)+'</div>','<button onclick="openCustomer(\''+l.id+'\')">更新安排</button>'])):table(['客户／顾问','跟进时间与档位','已记录事实','初步原因／核对状态','建议动作','操作'],list.slice(page*10,page*10+10).map(l=>[person(l)+owner(l),esc(Core.last(l,day())||'尚未建联')+'<small>'+overdueCell(l)+'</small>','<div class="note-cell">'+esc(l.evidence)+'</div>','<div class="note-cell">'+esc(note(l).reason)+'<small>'+(note(l).confirmed?'已与销售核对':'待与销售核对')+'</small></div>','<div class="note-cell">'+esc(note(l).action)+'</div>','<button onclick="openCustomer(\''+l.id+'\')">核对原因</button>']));
@@ -149,8 +154,14 @@ function renderBusinessSummary(){
  const a=Core.pending(rows(),day());$('deliverySummary').innerHTML=table(['待交付客户','车辆状态','计划交付','协同重点'],a.map(l=>[person(l)+owner(l),Core.happened(l.arrived,day())?'已到店，核对整备':'待到店，确认运输排期',dateCell(note(l).deliveryPlan),'<div class="note-cell">车辆负责人确认到店；交付专员核对整备与手续；顾问确认客户提车时间。</div>']));
  }
  if(activeView==='reports'){
- const a=rows().filter(l=>l.source==='商圈活动'),f=Core.funnel(a,day());
- $('activitySummary').innerHTML=table(['活动来源','有效留资','已有顾问','已建联','已到店','已试驾','已锁单'],a.length?[['商圈活动',a.length,a.filter(l=>l.advisor).length,f[1],f[3],f[4],f[5]]]:[]);
+ renderTaskProgress();
+ const a=rows().filter(l=>l.source==='商圈活动');
+ const routes=[['商圈活动','核对现场接待与首次建联'],['快闪店','复盘路过客群与后续预约'],['试驾会','核对试驾车与到场排期'],['社区体验日','关注家庭需求与二次邀约']];
+ const activityIds=OPS_DATA.leads.filter(l=>l.source==='商圈活动').map(l=>l.id);
+ const routeOf=l=>activityIds.indexOf(l.id)%routes.length;
+ const activityRows=routes.map(([name,action],i)=>{const group=a.filter(l=>routeOf(l)===i),f=Core.funnel(group,day());return [name,group.length,group.filter(l=>l.advisor).length,f[1],f[3],f[4],f[5],action]});
+ const f=Core.funnel(a,day());activityRows.push(['合计',a.length,a.filter(l=>l.advisor).length,f[1],f[3],f[4],f[5],'按卡点安排下一步跟进']);
+ $('activitySummary').innerHTML=table(['活动路径','有效留资','已有顾问','已建联','已到店','已试驾','已锁单','下一步核对'],activityRows);
  }
 }
 function renderConversionActions(){
@@ -167,14 +178,22 @@ const legacy={'step-0':'funnel','step-1':'strategy','step-2':'allocation','step-
 // Keep primary lists available while allowing readers to fold long detail tables.
 if (typeof document !== 'undefined') for (const [id, label, expanded] of [
  ['allocationTable', '线索明细', true],
+ ['allocationLogic', '分配原则', false],
  ['funnelGroupTable', '门店对比明细', true],
+ ['conversionActions', '改善重点明细', true],
  ['funnelAdvisorTable', '顾问对比明细', false],
  ['visitsTable', '每日进店明细', false],
  ['channelTable', '锁单渠道明细', false],
+ ['cycleTable', '成交周期明细', false],
+ ['strategyTable', '查看客户清单', true],
+ ['objectionSummary', '接待改善明细', false],
  ['reviewTable', '客户复盘明细', true],
+ ['deliverySummary', '交付协同明细', false],
+ ['targetTable', '目标完成明细', true],
  ['reportStaff', '顾问进度明细', false],
  ['reportOverdue', '未跟进客户明细', false],
  ['reportLocks', '锁单客户明细', false],
+ ['activitySummary', '活动线索明细', false],
  ['careTable', '客户关怀明细', true]
 ]) {
  const target = document.getElementById(id);
@@ -186,4 +205,8 @@ if (typeof document !== 'undefined') for (const [id, label, expanded] of [
  summary.textContent = label;
  target.before(details);
  details.append(summary, target);
+ if (id === 'strategyTable') {
+   const pager = document.getElementById('strategyPager');
+   if (pager) details.append(pager);
+ }
 }
